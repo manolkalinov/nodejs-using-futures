@@ -10,7 +10,7 @@ var colors = {
   ]
 };
 
-function print (i, msg) {
+global.print = function (i, msg) {
   console.log(colors.index[i-1] + i + '. ' + msg + colors.reset);
 }
 /*****************************************************************************/
