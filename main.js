@@ -11,7 +11,7 @@ function doAsyncWork (callback) {
   }, 3000);
 }
 
-// Doing async work with 
+// Doing async work with Fibers
 function doAsyncWorkWithFiber () {
   var fiber = Fiber.current;
 
@@ -24,17 +24,23 @@ function doAsyncWorkWithFiber () {
   return results;
 }
 
-var handleRequest = function (i) {
-  Fiber(function () {
+var wrapAsyncWorkWithFuture = Future.wrap(doAsyncWork);
 
-    print(i, 'handling request');
+function doAsyncWorkWithFuture () {
+  var future = new Future;
 
-    var results = doAsyncWorkWithFiber();
+  setTimeout(function () {
+    future.return('result of work');
+  }, 3000);
 
-    print(i, 'after doAsyncWorkCall with result ' + results);
-
-  }).run();
+  return future.wait();
 }
+
+var handleRequest = function (i) {
+    print(i, 'handling request');
+    var results = wrapAsyncWorkWithFuture().wait();
+    print(i, 'after doAsyncWorkCall with result ' + results);
+}.future();
 
 handleRequest(1);
 handleRequest(2);
