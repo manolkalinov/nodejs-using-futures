@@ -42,13 +42,14 @@ function wrapDoAsyncWork () {
   return future;
 }
 
-function handleRequest (i) {
-  Fiber(function () {
-    print(i, 'handling request');
-    var results = wrapDoAsyncWork().wait();
-    print(i, 'after doAsyncWorkCall with result ' + results);
-  }).run();
-}
+var handleRequest = function (i) {
+  var results;
+
+  print(i, 'handling request');
+  results = wrapDoAsyncWork().wait();
+  print(i, 'after doAsyncWorkCall with result ' + results);
+
+}.future();
 
 handleRequest(1);
 handleRequest(2);
